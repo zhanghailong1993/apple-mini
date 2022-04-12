@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main>
+    <div class="sticky">
+      <div class="content">
+        <section>
+          <h2 class="title-1">
+            <strong class="headline-gradient">The magic of iPad.</strong>
+            <span>In the palm of your hand.</span>
+          </h2>
+        </section>
+        <section>
+          <h2 class="title-2">
+            Where <strong>big ideas</strong>
+            <br>
+            come to life.
+          </h2>
+        </section>
+        <section>
+          <h2 class="title-3">
+            With <strong>power</strong>
+            <br>
+            that packs a punch.
+          </h2>
+        </section>
+      </div>
+      <div class="media-wrapper">
+        <canvas width="1600" height="1176" id="canvas"></canvas>
+      </div>
+    </div>
+    <div class="timeline-wrapper">
+      <div class="timeline timeline-1"></div>
+      <div class="timeline timeline-2"></div>
+      <div class="timeline timeline-3"></div>
+    </div>
+  </main>
+  <script src="./utils.js"></script>
+  <script>
+    let frames = [];
+    const fps = 30;
+    const url = './'
+    const source = [
+      {
+        url: `${url}large_a.webm`,
+        frameCount: 230
+      },
+      {
+        url: `${url}large_b.webm`,
+        frameCount: 230
+      }
+    ]
+    Promise.all(source.map((item) => cacheFrame(item))).then(values => {
+      const ctx = document.getElementById('canvas').getContext('2d');
+      frames = values.flat();
+      renderFrame(ctx, frames[0]);
+      window.addEventListener('scroll', () => {
+        const scrolled = document.documentElement.scrollTop / (document.documentElement.scrollHeight - document.documentElement.clientHeight);
+        frames = frames.filter(item => item !== false);
+        const frameIndex = parseInt(scrolled * frames.length) + 1
+        if (frames[frameIndex] !== undefined) {
+          renderFrame(ctx, frames[frameIndex])
+        }
+        document.querySelector('.content').style.transform = `matrix(1, 0, 0, 1, 0, -${document.documentElement.scrollTop})`
+      })
+    })
+  </script>
+</body>
+
+</html>
